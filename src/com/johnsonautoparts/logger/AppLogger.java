@@ -1,5 +1,6 @@
 package com.johnsonautoparts.logger;
 
+import java.text.Normalizer;
 import java.util.logging.Logger;
 
 /**
@@ -18,7 +19,11 @@ import java.util.logging.Logger;
 public class AppLogger {
 	private static final Logger logger = Logger.getLogger("JohnsonAutoParts");
 
-	public static void log(String message) {
-		logger.info(message);
+	public static void log(String unsanitisedText) {
+		String sanitisedText = Normalizer.normalize(unsanitisedText, Normalizer.Form.NFKC);
+
+		sanitisedText = sanitisedText.replaceAll("[\n|\r|\t]", "_");
+
+		logger.info(sanitisedText);
 	}
 }
