@@ -106,17 +106,19 @@ public class Project1 extends Project {
 	public String validateString(String str) throws AppException {
 		String s = Normalizer.normalize(str, Form.NFKC);
 
+		//Removing non-characters
+		String sanatisedString = s.replaceAll("[\\p{Cn}]", "");
+
 		// Simple pattern match to remove <script> tag
 		Pattern pattern = Pattern.compile("<script>");
-		Matcher matcher = pattern.matcher(s);
+		Matcher matcher = pattern.matcher(sanatisedString);
 
 		if (matcher.find()) {
 			throw new AppException("validateString() identified script tag",
 					"Invalid input");
 		}
 
-		// Deletes noncharacter code points
-		return s.replaceAll("[\\p{Cn}]", "");
+		return sanatisedString;
 	}
 
 	/**
