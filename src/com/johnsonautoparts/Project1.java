@@ -2,6 +2,8 @@ package com.johnsonautoparts;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -313,7 +315,7 @@ public class Project1 extends Project {
 				}
 			}
 
-			return readSb.toString();
+			return String.valueOf(StandardCharsets.UTF_8.encode(readSb.toString()));
 		} catch (IOException ioe) {
 			throw new AppException(
 					"Caught exception reading file: " + ioe.getMessage());
@@ -343,8 +345,8 @@ public class Project1 extends Project {
 		byte[] decodedBytes = Base64.getDecoder().decode(base64Str);
 
 		// convert bytes to string
-		String s = Arrays.toString(decodedBytes);
-		byte[] byteArray = s.getBytes();
+		String str = Arrays.toString(decodedBytes);
+		byte[] byteArray = str.getBytes(StandardCharsets.UTF_8);
 
 		// convert string bytes to BigInt
 		return new BigInteger(byteArray);
