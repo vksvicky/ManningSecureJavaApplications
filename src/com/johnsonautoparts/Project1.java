@@ -256,7 +256,18 @@ public class Project1 extends Project {
 	 */
 	public String regexClean(String str) {
 		String cleanText = str.toLowerCase(Locale.ENGLISH);
-		cleanText = cleanText.replace("script", "");
+
+		boolean sanitized = false;
+		while (!sanitized) {
+			Pattern pattern = Pattern.compile("<script>");
+			Matcher matcher = pattern.matcher(cleanText);
+
+			if (!matcher.find()) {
+				sanitized = true;
+			} else {
+				cleanText = cleanText.replaceAll("(?i)<script>", "");
+			}
+		}
 
 		return cleanText;
 	}
