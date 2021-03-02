@@ -8,12 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
@@ -375,17 +378,6 @@ public class Project1 extends Project {
 	 * @return String
 	 */
 	public String cleanBadHTMLTags(String str) {
-//		Pattern pattern = Pattern.compile("[<&>]");
-//		Matcher matcher = pattern.matcher(str);
-//
-//		String cleanStr = str;
-//
-//		// variable str is potentially dirty with HTML or JavaScript tags so
-//		// remove left, right, or amp
-//		if (matcher.find()) {
-//			cleanStr = str.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-//					.replaceAll(">", "&gt;");
-//		}
 		String cleanStr = Encode.forHtml(str);
 
 		return cleanStr;
@@ -504,10 +496,10 @@ public class Project1 extends Project {
 															// input is infinity
 
 			// check if we received the expected result
-			if (result == Double.NaN) {
+			if (Double.isNaN(result)) {
 				return false;
-			} else {
-				return true;
+			} else if (Double.isInfinite(result)) {
+				return false;
 			}
 		} catch (NumberFormatException nfe) {
 			throw new AppException(
@@ -532,25 +524,12 @@ public class Project1 extends Project {
 	 * @return boolean
 	 */
 	public boolean numStringCompare(int num) {
+		BigDecimal d = new BigDecimal(Double.valueOf(num / 1000.0).toString());
 
-		String s = Double.toString(num / 1000.0);
-
-		// check for comparison to validate
-		if (s.equals("0.001")) {
+		if (d.compareTo(new BigDecimal("0.001")) == 0) {
 			return true;
-		}
-		// string data may be in a slightly different format so perform
-		// additional
-		// check if we can match by removing any trailing zeroes
-		else {
-			s = s.replaceFirst("[.0]*$", "");
-			if (s.equals("0.001")) {
-				return true;
-			}
-			// neither check matched so return false
-			else {
-				return false;
-			}
+		} else {
+			return false;
 		}
 	}
 
@@ -567,12 +546,16 @@ public class Project1 extends Project {
 	 * @param num
 	 * @return boolean
 	 */
-	public int randomNumGenerate(int range) {
+	public int randomNumGenerate(int range) throws NoSuchAlgorithmException {
 		// seed the random number generator
-		Random number = new Random(99L);
+		try {
+			SecureRandom number = SecureRandom.getInstanceStrong();
 
-		// generate a random number based on the range given
-		return number.nextInt(range);
+			// generate a random number based on the range given
+			return number.nextInt(range);
+		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+			throw new NoSuchAlgorithmException("randomNumGenerate: "+noSuchAlgorithmException.getMessage());
+		}
 	}
 
 }
