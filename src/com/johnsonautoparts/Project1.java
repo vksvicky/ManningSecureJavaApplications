@@ -136,6 +136,16 @@ public class Project1 extends Project {
 	 * @return boolean
 	 */
 	public boolean regularExpression(String search) {
+		StringBuffer stringBuffer = new StringBuffer(search.length());
+
+		for (int i = 0; i < search.length(); ++i) {
+			char ch = search.charAt(i);
+			if (Character.isLetterOrDigit(ch) || ch == ' ' || ch == '\'') {
+				stringBuffer.append(ch);
+			}
+		}
+		search = stringBuffer.toString();
+
 		String regex = "(.* password\\[\\w+\\]" + search + ".*)";
 		Pattern searchPattern = Pattern.compile(regex);
 
@@ -178,7 +188,7 @@ public class Project1 extends Project {
 	 */
 	public boolean internationalization(String str) throws AppException {
 		// check for script tag
-		if (str.toLowerCase().contains("script")) {
+		if (str.toLowerCase(Locale.ENGLISH).contains("script")) {
 			throw new AppException("internationalization() found script tag");
 		}
 
@@ -194,7 +204,7 @@ public class Project1 extends Project {
 		// write the text to file
 		try (PrintWriter writer = new PrintWriter(
 				new FileWriter(tempFile.toFile()))) {
-			writer.printf("Passed text: %s", str);
+			writer.printf(Locale.ENGLISH, "Passed text: %s", str);
 			return true;
 		} catch (IOException ioe) {
 			throw new AppException("IOException in internationaliation(): "
