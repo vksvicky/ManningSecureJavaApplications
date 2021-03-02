@@ -434,20 +434,23 @@ public class Project1 extends Project {
 	 * @param num
 	 * @return int
 	 */
-	public int calcTotalValue(int num) {
+	public int calcTotalValue(int num) throws AppException {
 		int multiplier = 2;
 		int addedCost = 12;
 
-		int addCost = num + addedCost;
-		int multiCost = num * multiplier;
+		try {
+			int addCost = Math.addExact(num, addedCost);
+			int multiCost = Math.multiplyExact(num, multiplier);
 
-		// return the great of the add or multiply
-		if (addCost > multiCost) {
-			return addCost;
-		} else {
-			return multiCost;
+			// return the great of the add or multiply
+			if (addCost > multiCost) {
+				return addCost;
+			} else {
+				return multiCost;
+			}
+		} catch (ArithmeticException arithmeticException) {
+			throw new AppException("calcTotalValue: "+arithmeticException.getLocalizedMessage());
 		}
-
 	}
 
 	/**
@@ -465,9 +468,13 @@ public class Project1 extends Project {
 	 * @param monthlyTasks
 	 * @return int
 	 */
-	public int divideTask(int monthlyTasks) {
+	public int divideTask(int monthlyTasks) throws AppException {
 		int monthly = 12;
 
+		if (monthlyTasks <= 0) {
+			throw new AppException("divideTask: Passed Zero");
+
+		}
 		return monthly / monthlyTasks;
 	}
 
