@@ -8,16 +8,16 @@ package com.johnsonautoparts.servlet;
  * to help in debugging the webapp.
  * 
  */
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 import com.johnsonautoparts.db.DB;
 import com.johnsonautoparts.exception.DBException;
 import com.johnsonautoparts.logger.AppLogger;
+
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class SessionListener implements HttpSessionListener {
 

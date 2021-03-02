@@ -1,6 +1,21 @@
 package com.johnsonautoparts.servlet;
 
-import java.io.*;
+import com.johnsonautoparts.Project;
+import com.johnsonautoparts.Project4;
+import com.johnsonautoparts.db.DB;
+import com.johnsonautoparts.exception.AppException;
+import com.johnsonautoparts.exception.DBException;
+import com.johnsonautoparts.logger.AppLogger;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,21 +25,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.johnsonautoparts.Project;
-import com.johnsonautoparts.Project4;
-import com.johnsonautoparts.db.DB;
-import com.johnsonautoparts.exception.AppException;
-import com.johnsonautoparts.exception.DBException;
-import com.johnsonautoparts.logger.AppLogger;
 
 /**
  * Servlet Class registered via the web.xml as the primary class for handling

@@ -1,13 +1,12 @@
 package com.johnsonautoparts.servlet;
 
-import java.io.*;
-import java.security.SecureRandom;
+import com.johnsonautoparts.logger.AppLogger;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
-
-import com.johnsonautoparts.logger.AppLogger;
+import java.io.PrintWriter;
+import java.security.SecureRandom;
 
 /**
  * NO CHANGES ARE NEEDED IN THIS CLASS FOR THE liveProject

@@ -3,19 +3,12 @@
  */
 package com.johnsonautoparts.servlet;
 
-import java.io.IOException;
+import com.johnsonautoparts.logger.AppLogger;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.johnsonautoparts.logger.AppLogger;
+import java.io.IOException;
 
 /**
  *

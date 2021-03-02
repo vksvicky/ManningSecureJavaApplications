@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SecureCoding">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/WAR/SecureCoding.war!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

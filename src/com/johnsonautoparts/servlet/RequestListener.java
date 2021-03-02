@@ -1,10 +1,10 @@
 package com.johnsonautoparts.servlet;
 
+import com.johnsonautoparts.logger.AppLogger;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
-
-import com.johnsonautoparts.logger.AppLogger;
 
 /**
  * NO CHANGES NEEDED ON THIS CLASS FOR THE liveProject

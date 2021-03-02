@@ -1,10 +1,10 @@
 package com.johnsonautoparts.servlet;
 
+import com.johnsonautoparts.logger.AppLogger;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import com.johnsonautoparts.logger.AppLogger;
 
 /**
  * NO CHANGES NEEDED ON THIS CLASS FOR THE liveProject

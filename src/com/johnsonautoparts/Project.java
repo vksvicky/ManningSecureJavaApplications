@@ -1,9 +1,8 @@
 package com.johnsonautoparts;
 
-import java.sql.Connection;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
 
 /**
  * NO CHANGES NEEDED ON THIS CLASS FOR THE liveProject

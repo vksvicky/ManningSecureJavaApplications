@@ -1,22 +1,15 @@
 package com.johnsonautoparts.db;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-/**
- * NO CHANGES NEEDED ON THIS CLASS FOR THE liveProject
- * 
- * Class for handling database connections and calls when needed
- * 
- */
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import com.johnsonautoparts.exception.DBException;
+import com.johnsonautoparts.logger.AppLogger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-
-import com.johnsonautoparts.exception.DBException;
-import com.johnsonautoparts.logger.AppLogger;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DB {
 	/**

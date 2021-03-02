@@ -1,5 +1,34 @@
 package com.johnsonautoparts;
 
+import com.johnsonautoparts.exception.AppException;
+import com.johnsonautoparts.logger.AppLogger;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.owasp.encoder.Encode;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,55 +46,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathException;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPathVariableResolver;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.owasp.encoder.Encode;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import com.johnsonautoparts.exception.AppException;
-import com.johnsonautoparts.logger.AppLogger;
+import java.util.*;
 
 /**
  * 
