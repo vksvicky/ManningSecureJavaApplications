@@ -56,7 +56,7 @@ public class Project1 extends Project {
 	public String normalizeString(String str) {
 		Pattern pattern = Pattern.compile("[<&>]");
 		Matcher matcher = pattern.matcher(str);
-		String cleanStr = str;
+		String cleanStr = Normalizer.normalize(str, Form.NFKC);
 
 		// variable str is potentially dirty with HTML or JavaScript tags
 		if (matcher.find()) {
@@ -64,7 +64,6 @@ public class Project1 extends Project {
 					.replaceAll(">", "&gt;");
 		}
 
-		cleanStr = Normalizer.normalize(cleanStr, Form.NFKC);
 		return cleanStr;
 	}
 
@@ -85,7 +84,7 @@ public class Project1 extends Project {
 		Calendar cal = new GregorianCalendar();
 
 		// return the string with the calendar entry
-		return String.format(str + " passed on date %tF", cal);
+		return String.format("%s passed on date %tF", str, cal);
 	}
 
 	/**
