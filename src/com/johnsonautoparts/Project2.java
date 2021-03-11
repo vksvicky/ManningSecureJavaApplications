@@ -1,12 +1,13 @@
 package com.johnsonautoparts;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.johnsonautoparts.exception.AppException;
 import com.johnsonautoparts.logger.AppLogger;
 import com.johnsonautoparts.servlet.SessionConstant;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -188,7 +189,7 @@ public class Project2 extends Project {
 	 * @param fileName
 	 * @return String
 	 */
-	public void createFile(String fileName) throws AppException {
+	public void createFile(String fileName) throws AppException, IOException {
 		Path tempPath = null;
 		try {
 			tempPath = Paths.get("temp", "upload", fileName);
@@ -695,6 +696,7 @@ public class Project2 extends Project {
 			Document doc = builder.parse(userDbPath.toString());
 
 //			// create an XPath query
+
 			XPathFactory factory = XPathFactory.newInstance();
 			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			XPath xpath = factory.newXPath();
@@ -848,20 +850,34 @@ public class Project2 extends Project {
 	 */
 	public Object deserializeJson(String data) throws AppException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.enableDefaultTyping();
-
-		// disable default behavior which has been causing problems
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-				false);
+		TypeResolverBuilder<?> typeResolver = new CustomTypeResolver();
+		typeResolver.init(JsonTypeInfo.Id.CLASS, null);
+		typeResolver.inclusion(JsonTypeInfo.As.PROPERTY);
+		typeResolver.typeProperty("@CLASS");
+		mapper.setDefaultTyping(typeResolver);
 
 		// deserialize the object and return
 		try {
-			return (User) mapper.readValue(data, Object.class);
+			return mapper.readValue(data, User.class);
 		} catch (IOException ioe) {
 			throw new AppException("deserializationJson caught IOException: "
 					+ ioe.getMessage());
 		}
 
+	}
+
+	public class CustomTypeResolver extends ObjectMapper.DefaultTypeResolverBuilder {
+		private static final long serialVersionUID = 1L;
+		// only return classes which not marked as final
+		public CustomTypeResolver() {
+			super(ObjectMapper.DefaultTyping.NON_FINAL);
+		}
+		@Override
+
+		public boolean useForType(JavaType javaType) {
+			return javaType.getRawClass().getName()
+					.startsWith("com.johnsonautoparts");
+		}
 	}
 
 	/**
@@ -897,7 +913,7 @@ public class Project2 extends Project {
 	 * 
 	 * Code copied from: https://rgagnon.com/javadetails/java-0596.html
 	 * 
-	 * @param b
+	 * @param password
 	 * @return String
 	 */
 	private static String encryptPassword(String password) throws AppException {
