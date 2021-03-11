@@ -16,9 +16,14 @@ import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -510,20 +515,28 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS16-J
 	 * 
-	 * @param str
+	 * @param partQuantity
 	 * @return String
 	 */
 	public String createXML(String partQuantity) throws AppException {
-		// build the XML document
-		String xmlContent = "<?xml version=\"1.0\"?>" + "<item>\n"
-				+ "<title>Widget</title>\n" + "<price>500</price>\n"
-				+ "<quantity>" + partQuantity + "</quantity>" + "</item>";
-
 		// build the XML document from the string content
 		Document doc = null;
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+			Integer.parseInt(partQuantity);
+
+			// build the XML document
+			String xmlContent = "<?xml version=\"1.0\"?>" + "<item>\n"
+					+ "<title>Widget</title>\n" + "<price>500</price>\n"
+					+ "<quantity>" + partQuantity + "</quantity>" + "</item>";
+
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.setXIncludeAware(false);
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			factory.setExpandEntityReferences(false);
+
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource is = new InputSource(xmlContent);
 			doc = builder.parse(is);
@@ -553,7 +566,7 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS16-J
 	 * 
-	 * @param str
+	 * @param xml
 	 * @return String
 	 */
 	public Document validateXML(String xml) throws AppException {
@@ -567,14 +580,28 @@ public class Project2 extends Project {
 					+ ipe.getMessage());
 		}
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 		// the code for this XML parse is very rudimentary but is here for
 		// demonstration
 		// purposes to work with XML schema validation
 		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
+			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			Schema schema = factory.newSchema(xsdPath.toFile());
+			Validator validator = schema.newValidator();
 			InputSource is = new InputSource(xml);
+			validator.validate(new StreamSource(is.getByteStream()));
+
+			DocumentBuilderFactory xmlFactory = DocumentBuilderFactory.newInstance();
+			xmlFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			xmlFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			xmlFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			xmlFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			xmlFactory.setXIncludeAware(false);
+			xmlFactory.setExpandEntityReferences(false);
+			DocumentBuilder builder = xmlFactory.newDocumentBuilder();
+
 			return builder.parse(is);
 		} catch (ParserConfigurationException | SAXException xmle) {
 			throw new AppException(
@@ -596,7 +623,7 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS17-J
 	 * 
-	 * @param str
+	 * @param xml
 	 * @return String
 	 */
 	public Document parseXML(String xml) throws AppException {
