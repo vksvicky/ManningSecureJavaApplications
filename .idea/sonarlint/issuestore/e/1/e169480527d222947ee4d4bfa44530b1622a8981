@@ -1,0 +1,106 @@
+
+]
+java:S1192r"GDefine a constant instead of duplicating this literal "action" 3 times.(ö¦Êž
+l
+java:S1989ñ"PHandle the following exception that could be thrown by "getWriter": IOException.(ýâòÅùÿÿÿÿ
+d
+java:S1192Ú"HDefine a constant instead of duplicating this literal "project" 4 times.(ÐÚäœýÿÿÿÿ
+e
+java:S4201¹"IRemove this unnecessary null check; "instanceof" returns false for nulls.(Ç¸ÿ£úÿÿÿÿ
+f
+java:S1301L"KReplace this "switch" statement by "if" statements to increase readability.(ÌÓðžûÿÿÿÿ
+Y
+java:S1989š"=Handle the "AppException" thrown here in a "try/catch" block.(–‘×ÿþÿÿÿÿ
+R	java:S125ú"<This block of commented-out lines of code should be removed.(©ÒÚÁ
+Y
+java:S1854m"CRemove this useless assignment to local variable "responseContent".(•€Äÿ
+Q
+java:S1141‹"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+t
+java:S1989"XHandle the following exception that could be thrown by "parseLoginParams": AppException.(¹åšýÿÿÿÿ
+2
+java:S3626Ã"Remove this redundant jump.(ûÁÝ…
+Q
+java:S1141á"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+]
+java:S1192³"FDefine a constant instead of duplicating this literal "email" 5 times.(ô‘˜‡
+Y
+java:S1989Ž"=Handle the "AppException" thrown here in a "try/catch" block.(–‘×ÿþÿÿÿÿ
+l
+java:S1989¦"PHandle the following exception that could be thrown by "getWriter": IOException.(ïô†úÿÿÿÿ
+X
+java:S1989»"AHandle the "ServletException" thrown here in a "try/catch" block.(Ÿäö
+S	java:S106H"9Replace this use of System.out or System.err by a logger.(¨êàÕùÿÿÿÿ
+2
+java:S3626ù"Remove this redundant jump.(ûÁÝ…
+R	java:S125ä"<This block of commented-out lines of code should be removed.(ËïÓ‰
+j
+java:S1192†"SDefine a constant instead of duplicating this literal "application error" 10 times.(ò¸ø•
+]
+java:S3878“"ADisambiguate this call by either casting as "Class" or "Class[]".(ö»áÏüÿÿÿÿ
+Y
+java:S1989þ"=Handle the "AppException" thrown here in a "try/catch" block.(–‘×ÿþÿÿÿÿ
+h
+java:S1192Œ"LDefine a constant instead of duplicating this literal "secure_form" 4 times.(Üº·¹ûÿÿÿÿ
+r
+java:S1192à"[Define a constant instead of duplicating this literal "missing request parameters" 8 times.(­Öçß
+q
+java:S1989„"UHandle the following exception that could be thrown by "getConnection": AppException.(þí•æýÿÿÿÿ
+t
+java:S1450,"YRemove the "loginEmail" field and declare it as a local variable in the relevant methods.(Ê»©äûÿÿÿÿ
+o
+java:S1989×"SHandle the following exception that could be thrown by "parseParams": AppException.(ðÇº‡øÿÿÿÿ
+o
+java:S1989ß"XHandle the following exception that could be thrown by "getProjectMethod": AppException.(€ßµé
+Y
+java:S1989 "=Handle the "AppException" thrown here in a "try/catch" block.(–‘×ÿþÿÿÿÿ
+q
+java:S1989á"UHandle the following exception that could be thrown by "getConnection": AppException.(þí•æýÿÿÿÿ
+s
+java:S1989Ý"WHandle the following exception that could be thrown by "getProjectClass": AppException.(¤œÍÌøÿÿÿÿ
+h
+java:S3776f"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(çŽØß
+l
+java:S1989•"PHandle the following exception that could be thrown by "getWriter": IOException.(ýâòÅùÿÿÿÿ
+]
+java:S1192k"GDefine a constant instead of duplicating this literal "status" 7 times.(µ‡­ 
+>
+java:S1940G")Use the opposite operator ("<=") instead.(ëôß
+g
+java:S1989Ì"PHandle the following exception that could be thrown by "getWriter": IOException.(ÎÜƒù
+R	java:S125ï"<This block of commented-out lines of code should be removed.(©ÒÚÁ
+T
+java:S1989…"=Handle the "AppException" thrown here in a "try/catch" block.(”¤¦ÿ
+q
+java:S1989”"UHandle the following exception that could be thrown by "getConnection": AppException.(þí•æýÿÿÿÿ
+S	java:S106]"9Replace this use of System.out or System.err by a logger.(³õ€Âøÿÿÿÿ
+t
+java:S1989¥"XHandle the following exception that could be thrown by "parseLoginParams": AppException.(¹åšýÿÿÿÿ
+q
+java:S1989¨"UHandle the following exception that could be thrown by "getConnection": AppException.(þí•æýÿÿÿÿ
+_
+java:S1192Š"IDefine a constant instead of duplicating this literal "username" 5 times.(¼¶ÅN
+2
+java:S3626Ô"Remove this redundant jump.(ûÁÝ…
+{
+java:S1989½"_Handle the following exceptions that could be thrown by "doGet": ServletException, IOException.(®Ó‘ûÿÿÿÿÿ
+9
+java:S2653F"#Remove this unwanted "main" method.(Çµí‘
+q
+java:S1989Þ"UHandle the following exception that could be thrown by "getConnection": AppException.(ûõŠåøÿÿÿÿ
+e
+java:S1192‹"IDefine a constant instead of duplicating this literal "password" 9 times.(™ã×ýÿÿÿÿ
+l
+java:S1989¥"PHandle the following exception that could be thrown by "getWriter": IOException.(ÅÖƒÚüÿÿÿÿ
+d
+java:S1192ƒ"MDefine a constant instead of duplicating this literal "number_files" 3 times.(ûñ—ø
+_
+java:S1192"HDefine a constant instead of duplicating this literal "message" 5 times.(Æ—¤æ
+2
+java:S3626¨"Remove this redundant jump.(ûÁÝ…
+s
+java:S2226,"XRemove this misleading mutable servlet instance field or make it "static" and/or "final"(Ê»©äûÿÿÿÿ
+t
+java:S1989Þ"XHandle the following exception that could be thrown by "parseLoginParams": AppException.(¹åšýÿÿÿÿ
+2
+java:S3626"Remove this redundant jump.(ûÁÝ…

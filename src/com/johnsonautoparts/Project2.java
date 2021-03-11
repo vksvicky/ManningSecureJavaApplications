@@ -68,16 +68,23 @@ public class Project2 extends Project {
 	 * @param query
 	 * @return String
 	 */
-	public int dbInventory(String id) throws AppException {
+	public int dbInventory(String idString) throws AppException {
 		if (connection == null) {
 			throw new AppException("dbQuery had stale connection");
 		}
 
-		// execute the SQL and return the count of the inventory
 		try {
-			String sql = "SELECT COUNT(id) FROM inventory WHERE id = " + id;
+			String sql = "SELECT COUNT(id) FROM inventory WHERE id = ?";
+			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+				int id = 0;
 
-			try (Statement stmt = connection.createStatement()) {
+				try {
+					id = Integer.parseInt(idString);
+				} catch (NumberFormatException nfe) {
+					throw new AppException("dbInventory - Parsing integer failed: "+ nfe.getMessage());
+				}
+
+				stmt.setInt(1, id);
 				try (ResultSet rs = stmt.executeQuery(sql)) {
 
 					if (rs.next()) {

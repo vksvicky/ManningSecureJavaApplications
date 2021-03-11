@@ -1,0 +1,19 @@
+
+W
+java:S3516é"9Refactor this method to not always return the same value.(î…şã8åÏ¼›ÿ.
+]
+java:S5361E"HReplace this call to "replaceAll()" by a call to the "replace()" method.(¼á¢s
+c
+java:S5361D"HReplace this call to "replaceAll()" by a call to the "replace()" method.(Ùàô­şÿÿÿÿ
+}
+java:S1149"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(¸¼Àõ8Æ¿ï˜ÿ.
+A
+java:S2131"Use "Double.toString" instead.(°Œ± ûÿÿÿÿ8ã»Á›ÿ.
+k
+java:S1871õ"MThis branch's code block is the same as the block for the branch on line 499.(°œË†8†‚¿›ÿ.
+d
+java:S1126‘"AReplace this if-then-else statement by a single return statement.(¼œœùÿÿÿÿ8ã»Á›ÿ.
+c
+java:S5361D"HReplace this call to "replaceAll()" by a call to the "replace()" method.(Ùàô­şÿÿÿÿ
+~
+java:S1488ı"`Immediately return this expression instead of assigning it to the temporary variable "cleanStr".(Æ÷ï­8½›Üšÿ.
