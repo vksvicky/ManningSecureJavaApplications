@@ -2,8 +2,10 @@
   <library name="SecureCoding">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/WAR/SecureCoding.war!/" />
+      <root url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" recursive="false" />
   </library>
 </component>

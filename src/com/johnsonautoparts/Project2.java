@@ -501,7 +501,7 @@ public class Project2 extends Project {
 			}
 		} catch (ScriptException se) {
 			throw new AppException(
-					"evalScript caugth ScriptException: " + se.getMessage());
+					"evalScript caught ScriptException: " + se.getMessage());
 		}
 	}
 
@@ -531,7 +531,7 @@ public class Project2 extends Project {
 					+ "<title>Widget</title>\n" + "<price>500</price>\n"
 					+ "<quantity>" + partQuantity + "</quantity>" + "</item>";
 
-			documentBuilder();
+			DocumentBuilderFactory factory = documentBuilder();
 
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource is = new InputSource(xmlContent);
@@ -752,10 +752,10 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute SER12-J
 	 * 
-	 * @param str
+	 * @param base64Str
 	 * @return String
 	 */
-	public Object deserializeObject(String base64Str) throws AppException {
+	public AcceptListClass deserializeObject(String base64Str) throws AppException {
 		if (base64Str == null) {
 			throw new AppException(
 					"deserializeObject received null base64 string");
@@ -776,8 +776,11 @@ public class Project2 extends Project {
 				decodedBytes)) {
 
 			// wrap the OIS in the try to autoclose
-			try (ObjectInputStream ois = new ObjectInputStream(bais)) {
-				return ois.readObject();
+//			try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+			try (AcceptListObjectInputStream ois = new AcceptListObjectInputStream(
+						bais, AcceptListClass.class)) {
+					return (AcceptListClass) ois.readObject();
+				//return ois.readObject();
 			} catch (StreamCorruptedException sce) {
 				throw new AppException(
 						"deserializedObject caugh stream exception: "
@@ -793,6 +796,40 @@ public class Project2 extends Project {
 					+ ioe.getMessage());
 		}
 
+	}
+
+	private static class AcceptListObjectInputStream extends ObjectInputStream {
+		private Class<?> acceptListClass;
+		public AcceptListObjectInputStream(InputStream inputStream,
+										   Class<?> acceptListClass) throws IOException {
+			super(inputStream);
+			this.acceptListClass = acceptListClass;
+		}
+
+		@Override
+		protected Class<?> resolveClass(ObjectStreamClass desc)
+				throws IOException, ClassNotFoundException {
+			if (!desc.getName().equals(acceptListClass.getName())) {
+				throw new InvalidClassException(
+						"Unauthorized deserialization attempt", desc.getName());
+			}
+			return super.resolveClass(desc);
+		}
+	}
+
+	public class AcceptListClass {
+		private String ssn;
+		private String sessionId;
+		public AcceptListClass(String ssn, String sessionId) {
+			this.ssn = ssn;
+			this.sessionId = sessionId;
+		}
+		public String getSsn() {
+			return new String(ssn);
+		}
+		public boolean validateSession(String id) {
+			return sessionId.equals(id);
+		}
 	}
 
 	/**
