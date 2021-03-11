@@ -65,7 +65,7 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS00-J
 	 * 
-	 * @param query
+	 * @param idString
 	 * @return String
 	 */
 	public int dbInventory(String idString) throws AppException {
@@ -134,11 +134,12 @@ public class Project2 extends Project {
 
 		// execute the SQL and return the count of the tasks
 		try {
-			String sql = "SELECT COUNT(task_name) FROM schedule WHERE task_name = '"
-					+ taskName + "'";
-			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-				try (ResultSet rs = stmt.executeQuery()) {
+			String sql = "SELECT COUNT(task_name) FROM schedule WHERE task_name = ?";
 
+			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+				stmt.setString(1, taskName);
+
+				try (ResultSet rs = stmt.executeQuery()) {
 					if (rs.next()) {
 						return rs.getInt(1);
 					} else {
@@ -175,7 +176,7 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS50-J
 	 * 
-	 * @param str
+	 * @param fileName
 	 * @return String
 	 */
 	public void createFile(String fileName) throws AppException {
@@ -210,7 +211,10 @@ public class Project2 extends Project {
 		 * on creating a safe filename
 		 */
 		// check the path
-		String safePathStr = makeSafePath(tempPath.toString());
+		String safePathStr = null, sanitizedFilename = null;
+
+		sanitizedFilename = fileName.replaceAll("[^A-Za-z0-9]", "_");
+		safePathStr = makeSafePath(tempPath.toString() + sanitizedFilename);
 
 		// write the session_data content to the file
 		Path safePath = Paths.get(safePathStr);
