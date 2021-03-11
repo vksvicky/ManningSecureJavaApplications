@@ -22,12 +22,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Base64;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -242,11 +243,33 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute FIO16-J
 	 * 
-	 * @param str
+	 * @param dirty
 	 * @return String
 	 */
-	public String makeSafePath(String dirty) {
-		return dirty.replaceAll("\\.\\." + File.separator, "_");
+	public String makeSafePath(String dirty) throws IOException {
+		String acceptDirectory = "/acceptedDirectory";
+		int symlinkDepth = 1;
+
+		if (dirty == null || dirty.trim().isEmpty()) {
+			throw new IOException("Path is null or empty");
+		}
+
+		File _file = new File(dirty);
+
+		if (symlinkDepth <= 0) {
+			throw new IOException("Path has too many symbolic links");
+		}
+
+		String canonicalPath = _file.getCanonicalPath();
+		if (canonicalPath.indexOf(acceptDirectory) != 0) {
+			throw new IOException("Canonical path not in our safe directory");
+		}
+
+		Path filePath = _file.toPath();
+		if (Files.isRegularFile(filePath, LinkOption.NOFOLLOW_LINKS)) {
+			throw new IOException("Path points to a special location");
+		}
+		return canonicalPath;
 	}
 
 	/**
@@ -262,13 +285,15 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS04-J
 	 * 
-	 * @param str
+	 * @param fileName
 	 * @return String
 	 */
 	public String unzip(String fileName) throws AppException {
 		final int BUFFER = 512;
 		final int OVERFLOW = 0x1600000; // 25MB
+		final int NUMBER_OF_FILE_IN_ZIP = 1024;
 		Path zipPath = null;
+
 		try {
 			zipPath = Paths.get("temp", "zip", fileName);
 		} catch (InvalidPathException ipe) {
@@ -281,21 +306,22 @@ public class Project2 extends Project {
 					new BufferedInputStream(fis))) {
 				ZipEntry entry;
 
+				int entries = 0;
+				long total = 0L;
+
 				// go through each entry in the file
 				while ((entry = zis.getNextEntry()) != null) {
 					AppLogger.log("Extracting zip from filename: " + fileName);
 					int count;
 					byte data[] = new byte[BUFFER];
-					// avoid zip bombs by only allows reasonable size files
-					if (entry.getSize() > OVERFLOW) {
-						throw new IllegalStateException(
-								"zip file exceed max limit");
-					}
-					// look for illegal size which may be a hint something is
-					// wrong
-					if (entry.getSize() == -1) {
-						throw new IllegalStateException(
-								"zip file entry returned inconsistent size and may be a zip bomb");
+
+					//Validate filename
+					String filename = validateFileName(entry.getName());
+
+					if (entry.isDirectory()) {
+						Path p = Paths.get(filename);
+						Files.createDirectory(p);
+						continue;
 					}
 
 					// output file is path plus entry
@@ -312,12 +338,22 @@ public class Project2 extends Project {
 							entryPath.toString())) {
 						try (BufferedOutputStream dest = new BufferedOutputStream(
 								fos, BUFFER)) {
-							while ((count = zis.read(data, 0, BUFFER)) != -1) {
+							while (total + BUFFER <= OVERFLOW && (count = zis.read(data, 0, BUFFER)) != -1) {
 								dest.write(data, 0, count);
+								total += count;
 							}
+
 							dest.flush();
 
 							zis.closeEntry();
+
+							entries++;
+							if (entries > NUMBER_OF_FILE_IN_ZIP) {
+								throw new IllegalStateException("Too many files to unzip.");
+							}
+							if (total + BUFFER > OVERFLOW) {
+								throw new IllegalStateException("File being unzipped is too big.");
+							}
 						} // end bufferedoutputstream
 					} // end fileoutputstream
 
@@ -344,6 +380,25 @@ public class Project2 extends Project {
 
 		// diretory to the extracted zip
 		return zipPath.toString();
+	}
+
+	private String validateFileName(String filename) throws IOException {
+		if (filename == null || filename.trim().isEmpty()) {
+			throw new IOException("filename is null or empty");
+		}
+
+		File f = new File(filename);
+		String canonicalPath = f.getCanonicalPath();
+
+		File id = new File(".");
+		String idCanonicalPath = id.getCanonicalPath();
+
+		if (canonicalPath.startsWith(idCanonicalPath)) {
+			return canonicalPath;
+		} else {
+			throw new IllegalStateException(
+					"File is outside the expected path");
+		}
 	}
 
 	/**
