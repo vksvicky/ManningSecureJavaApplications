@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,6 +36,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -529,13 +531,7 @@ public class Project2 extends Project {
 					+ "<title>Widget</title>\n" + "<price>500</price>\n"
 					+ "<quantity>" + partQuantity + "</quantity>" + "</item>";
 
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-			factory.setXIncludeAware(false);
-			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-			factory.setExpandEntityReferences(false);
+			documentBuilder();
 
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource is = new InputSource(xmlContent);
@@ -593,13 +589,7 @@ public class Project2 extends Project {
 			InputSource is = new InputSource(xml);
 			validator.validate(new StreamSource(is.getByteStream()));
 
-			DocumentBuilderFactory xmlFactory = DocumentBuilderFactory.newInstance();
-			xmlFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			xmlFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			xmlFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-			xmlFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-			xmlFactory.setXIncludeAware(false);
-			xmlFactory.setExpandEntityReferences(false);
+			DocumentBuilderFactory xmlFactory = documentBuilder();
 			DocumentBuilder builder = xmlFactory.newDocumentBuilder();
 
 			return builder.parse(is);
@@ -626,13 +616,13 @@ public class Project2 extends Project {
 	 * @param xml
 	 * @return String
 	 */
-	public Document parseXML(String xml) throws AppException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
+	public Document parseXML(String xml) throws AppException, ParserConfigurationException {
 		// the code for this XML parse is very rudimentary but is here for
 		// demonstration
 		// purposes to configure the parse to avoid XEE attacks
 		try {
+			DocumentBuilderFactory factory = documentBuilder();
+
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource is = new InputSource(xml);
 			return builder.parse(is);
@@ -643,6 +633,19 @@ public class Project2 extends Project {
 			throw new AppException(
 					"validateXML caught IO exception: " + ioe.getMessage());
 		}
+	}
+
+	private DocumentBuilderFactory documentBuilder() throws ParserConfigurationException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		factory.setXIncludeAware(false);
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		factory.setExpandEntityReferences(false);
+
+		return factory;
 	}
 
 	/**
@@ -659,7 +662,7 @@ public class Project2 extends Project {
 	 * Source code from:
 	 * https://wiki.sei.cmu.edu/confluence/display/java/IDS53-J.+Prevent+XPath+Injection
 	 * 
-	 * @param str
+	 * @param userPass
 	 * @return boolean
 	 */
 	public boolean xpathLogin(String userPass) throws AppException {
@@ -686,25 +689,30 @@ public class Project2 extends Project {
 			String passHash = encryptPassword(args[1]);
 
 			// load the users xml files
-			DocumentBuilderFactory domFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory domFactory = documentBuilder();
 			domFactory.setNamespaceAware(true);
 			DocumentBuilder builder = domFactory.newDocumentBuilder();
 			Document doc = builder.parse(userDbPath.toString());
 
-			// create an XPath query
+//			// create an XPath query
 			XPathFactory factory = XPathFactory.newInstance();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			XPath xpath = factory.newXPath();
-			XPathExpression expr = xpath
-					.compile("//users/user[username/text()='" + username
-							+ "' and password/text()='" + passHash + "' ]");
+			// create an instance of our custom resolver to add variables and
+			// set it to the xpath
+			MapVariableResolver resolver = new MapVariableResolver();
+			xpath.setXPathVariableResolver(resolver);
+			// create the xpath expression with variables and map variables
+			XPathExpression expression = xpath.compile("//users/user[username/text()=$username and password/text()=$password]");
+			resolver.addVariable(null, "username", username);
+			resolver.addVariable(null, "password", passHash);
 
-			// obtain the results
-			Object result = expr.evaluate(doc, XPathConstants.NODESET);
-			NodeList nodes = (NodeList) result;
-
-			// return boolean of the test
-			return (nodes.getLength() >= 1);
+			// login failed if no element was found
+			if (expression.evaluate(doc, XPathConstants.NODE) == null) {
+				return (false);
+			} else {
+				return (true);
+			}
 		} catch (ParserConfigurationException | SAXException
 				| XPathException xmle) {
 			throw new AppException(
@@ -712,6 +720,20 @@ public class Project2 extends Project {
 		} catch (IOException ioe) {
 			throw new AppException(
 					"xpathLogin caught IO exception: " + ioe.getMessage());
+		}
+	}
+
+	private static class MapVariableResolver implements XPathVariableResolver {
+		private HashMap<QName, Object> variables = new HashMap<QName, Object>();
+		public void addVariable(String namespaceURI, String localName,
+								Object value) {
+			addVariable(new QName(namespaceURI, localName), value);
+		}
+		public void addVariable(QName name, Object value) {
+			variables.put(name, value);
+		}
+		public Object resolveVariable(QName name) {
+			return variables.get(name);
 		}
 	}
 
