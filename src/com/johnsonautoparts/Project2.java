@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -417,6 +418,11 @@ public class Project2 extends Project {
 	public String exec(String cmd) throws AppException {
 		// execute the OS command
 		try {
+
+			if (!Pattern.matches("[0-9A-Za-z]+", cmd)) {
+				throw new AppException("cmd has an illegal characters");
+			}
+
 			Runtime rt = Runtime.getRuntime();
 			Process proc = rt.exec(new String[]{"sh", "-c", cmd + " "});
 			int result = proc.waitFor();
@@ -456,11 +462,15 @@ public class Project2 extends Project {
 	 * 
 	 * REF: CMU Software Engineering Institute IDS52-J
 	 * 
-	 * @param cmd
+	 * @param printMessage
 	 * @return String
 	 */
 	public String evalScript(String printMessage) throws AppException {
 		try {
+			if (!printMessage.matches("[\\w]*")) {
+				throw new IllegalArgumentException("evalScript - illegal characters passed");
+			}
+
 			ScriptEngineManager manager = new ScriptEngineManager();
 			ScriptEngine engine = manager.getEngineByName("javascript");
 			Object ret = engine
